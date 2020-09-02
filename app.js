@@ -19,7 +19,7 @@ const newEmployee = []
 //figuring out positions
 const getPosition = [{
     type: 'list',
-    name: 'employeeSelection',
+    name: 'role',
     message: 'What type of employee would like to add?',
     choices: [
         'Intern',
@@ -33,6 +33,7 @@ const getPosition = [{
 //function to allow you to choose a role for employees
 function promptQuestions() {
     inquirer.prompt(getPosition).then(answers => {
+        console.log(answers)
         switch (answers.role) {
             case "Manager":
                 return newManager();
@@ -60,8 +61,8 @@ function promptQuestions() {
 promptQuestions();
 
 
-//questions for the manager role
-const managerQuestion =
+//function to generate the html cards with added input
+function newManager() {
     inquirer
     .prompt([{
             type: 'input',
@@ -85,10 +86,17 @@ const managerQuestion =
         }
 
 
-    ]);
+    ]).then(answers => {
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+        newEmployee.push(manager)
+        promptQuestions();
+    })
 
-// questions for the egnineer
-const engineerQuestion =
+
+
+};
+
+function newEngineer() {
     inquirer
     .prompt([{
             type: 'input',
@@ -110,10 +118,17 @@ const engineerQuestion =
             name: 'github',
             message: 'Enter GitHub link:'
         }
-    ]);
+    ]).then(answers => {
+        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+        newEmployee.push(engineer)
+        promptQuestions();
+    })
 
-//questions for the intern 
-const internQuestion =
+
+
+};
+
+function newIntern() {
     inquirer
     .prompt([{
             type: 'input',
@@ -137,34 +152,10 @@ const internQuestion =
         }
 
 
-    ]);
-
-
-//function to generate the html cards with added input
-function newManager() {
-    managerQuestion.then(answers => {
-        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
-        newEmployee.push(manager)
-    })
-
-
-
-};
-
-function newEngineer() {
-    engineerQuestion.then(answers => {
-        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
-        newEmployee.push(engineer)
-    })
-
-
-
-};
-
-function newIntern() {
-    internQuestion.then(answers => {
+    ]).then(answers => {
         const intern = new Intern(answers.name, answers.id, answers.email, answers.school)
         newEmployee.push(intern)
+        promptQuestions();
     })
 
 
@@ -172,22 +163,22 @@ function newIntern() {
 };
 
 function noMore() {
-    renderHTML;
+    renderHTML();
+    console.log(newEmployee)
+    
 }
 
 
+function renderHTML(){
+fs.writeFile(outputPath, render(newEmployee), function(err, data) {
+
+    if (err) {
+      return console.log(err);
+    }
+  
+    console.log("Success!");
+  
+  })};
 
 
 
-
-
-
-//function to generate the input needed to mark up the html cards
-function renderHTML() {
-    fs.writeFile(outputPath, render(newEmployee))
-
-} //, (err) => {
-//         if (err) console.log(err)
-//         else(console.log("successfully wrote to the team.html!"))
-//     }
-// }
